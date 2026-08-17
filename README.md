@@ -59,7 +59,7 @@ The two DLLs are Microsoft components from the MSFS 2024 SDK. They let an extern
 |---|---|
 | Windows 10 or 11 (x64) | The locator is a Windows Forms application |
 | Microsoft Flight Simulator 2024 | Career mode, for Search & Rescue missions. The SimConnect server is built into the simulator |
-| .NET Framework 4.8 | Already included with current Windows versions |
+| [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) | Already included with current Windows versions. If the locator will not start, download the **runtime** from that Microsoft page (not the Developer Pack) |
 
 You do **not** need the MSFS 2024 SDK, Developer Mode, Git, or Visual Studio to use a release build. Those are only needed to build from source.
 
@@ -172,7 +172,7 @@ This section is for developers. Players should use the [release zip](https://git
 | Requirement | Notes |
 |---|---|
 | Microsoft Flight Simulator 2024 SDK | Provides the SimConnect libraries. Enable Developer Mode in MSFS, then `Help > SDK Installer` |
-| .NET Framework 4.8 | The build script uses the bundled C# compiler at `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe` |
+| [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) | The build script uses the bundled C# compiler at `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe`. If it is missing, download the runtime from that Microsoft page |
 
 The SDK provides two files that the locator needs:
 
