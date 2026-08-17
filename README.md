@@ -29,7 +29,7 @@ No installer, no SDK, no compiler. Download, unzip, double-click.
 Go to the [latest release](https://github.com/chengchew0204/MSFS2024_SAR_Locator/releases/latest) and download:
 
 ```
-MSFS-SAR-Locator-v1.0.0.zip
+MSFS-SAR-Locator-v1.1.0.zip
 ```
 
 ### 2. Extract
@@ -227,10 +227,10 @@ Output goes to `bin\Release\`, with the native `SimConnect.dll` copied alongside
 ### Package a release zip
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\Package-Release.ps1 -Version 1.0.0
+powershell -ExecutionPolicy Bypass -File .\Package-Release.ps1 -Version 1.1.0
 ```
 
-`Package-Release.ps1` builds the project, stages the executable and both SimConnect libraries into a single top-level folder, and writes `dist\MSFS-SAR-Locator-v1.0.0.zip`. The `dist` folder is ignored by Git; upload the zip as a GitHub release asset.
+`Package-Release.ps1` builds the project, stages the executable and both SimConnect libraries into a single top-level folder, and writes `dist\MSFS-SAR-Locator-v1.1.0.zip`. The `dist` folder is ignored by Git; upload the zip as a GitHub release asset.
 
 ### Deploying a build manually
 
