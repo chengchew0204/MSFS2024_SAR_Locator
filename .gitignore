@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+*.exe
+*.pdb
+
+# SimConnect libraries copied in by Build.ps1 (installed from the MSFS 2024 SDK)
+Microsoft.FlightSimulator.SimConnect.dll
+SimConnect.dll
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Local changelog (not versioned)
+CHANGELOG.md
