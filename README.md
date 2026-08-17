@@ -10,6 +10,100 @@ The locator is read-only with respect to your flight: it never moves the aircraf
 
 ---
 
+## Download and install
+
+No installer, no SDK, no compiler. Download, unzip, double-click.
+
+### 1. Download
+
+Go to the [latest release](https://github.com/chengchew0204/MSFS2024_SAR_Locator/releases/latest) and download:
+
+```
+MSFS-SAR-Locator-v1.0.0.zip
+```
+
+### 2. Extract
+
+Extract the zip anywhere you like: Documents, Desktop, or a folder such as `D:\Tools\MSFS-SAR-Locator\`. There is no required location.
+
+Two rules only:
+
+- **Keep all three files in the same folder.** The locator loads the SimConnect libraries from its own folder, so do not move the `.exe` out on its own.
+- **Do not put it in the MSFS Community folder.** This is a normal Windows application, not an add-on package. The Community folder will not run it.
+
+### 3. Run
+
+1. Double-click `MSFS2024SARLocator.exe`.
+2. Start MSFS 2024 and load a Career **Search & Rescue** mission. The order does not matter; the locator waits and connects on its own.
+3. Press `SCAN FOR TARGET` and follow the needle.
+
+### First run: Windows may warn you
+
+The executable is not code-signed, so Windows SmartScreen can show "Windows protected your PC" the first time. Choose **More info**, then **Run anyway**.
+
+If the app does not start at all after extracting, Windows may have marked the download as blocked. Right-click the downloaded zip, choose **Properties**, tick **Unblock**, then extract again.
+
+### What is in the zip
+
+| File | What it is |
+|---|---|
+| `MSFS2024SARLocator.exe` | The locator itself |
+| `Microsoft.FlightSimulator.SimConnect.dll` | Microsoft SimConnect client, managed .NET wrapper |
+| `SimConnect.dll` | Microsoft SimConnect client, native x64 runtime |
+
+The two DLLs are Microsoft components from the MSFS 2024 SDK. They let an external application talk to the simulator. They are shipped inside the zip so you never have to install the SDK yourself, and they remain under Microsoft's own license terms rather than this project's GPL license.
+
+### Requirements
+
+| Requirement | Notes |
+|---|---|
+| Windows 10 or 11 (x64) | The locator is a Windows Forms application |
+| Microsoft Flight Simulator 2024 | Career mode, for Search & Rescue missions. The SimConnect server is built into the simulator |
+| .NET Framework 4.8 | Already included with current Windows versions |
+
+You do **not** need the MSFS 2024 SDK, Developer Mode, Git, or Visual Studio to use a release build. Those are only needed to build from source.
+
+---
+
+## Usage
+
+1. Start MSFS 2024 and load a Career **Search & Rescue** mission. The locator can also be started first; it will wait and connect on its own.
+2. Run `MSFS2024SARLocator.exe`. The header shows `CONNECTED` once SimConnect is live and aircraft data is flowing.
+3. Press **`SCAN FOR TARGET`**. You can do this right at the mission start; there is no need to reach the search area first. The button becomes available as soon as aircraft position and heading arrive, and the default 15 NM radius often already covers the rescue target.
+4. If a target is found, the header switches to `TARGET LOCKED` and live guidance starts:
+   - follow the needle and the turn command,
+   - watch the distance count down.
+5. If the first scan finds nothing, the target is simply not loaded or not in range yet. Fly toward the mission objective and press the button again. Distance from the scan origin matters more than anything else, so scan again after each leg of your approach or search pattern.
+6. Once you are overhead, use `Copy coordinates` in Settings if you want the exact position for a landing plan.
+
+Scanning is entirely on demand. The locator never scans by itself, and pressing the button never depends on the search-area indicator in the header.
+
+Recommended window setup: run MSFS in **windowed** or **borderless windowed** mode and enable `ON TOP`. In exclusive fullscreen, Windows can still draw the simulator above every other window.
+
+### Header controls
+
+| Control | Action |
+|---|---|
+| Header area | Drag to move the window |
+| `SETTINGS` | Expand or collapse the settings panel below the HUD |
+| `ON TOP` | Toggle always-on-top; the preference is remembered |
+| `-` | Minimize to the taskbar |
+| `X` | Exit the application |
+
+### Settings
+
+| Setting | Default | Purpose |
+|---|---|---|
+| Radius NM | 15 | SimObject scan radius, 1 to 100 NM. Increase only if a scan misses a target you know is nearby |
+| Search gate NM | 0.50 | Distance to the navigation target at which the search area is considered active, 0.10 to 3.00 NM. Affects the `SEARCH ACTIVE` indicator only |
+| Auto-pause on incident | On | Master switch for the auto-pause feature |
+| Crash / Hard landing / Essential part broken | On | Individual incident triggers |
+| `Scan target` | - | Same action as the main `SCAN FOR TARGET` button |
+| `Reconnect` | - | Drop and re-establish the SimConnect connection |
+| `Copy coordinates` | - | Copy the locked target's latitude and longitude to the clipboard |
+
+---
+
 ## Features
 
 ### Target location
@@ -53,14 +147,32 @@ The locator posts Escape to the MSFS window first so the pause UI matches a manu
 
 ---
 
-## Prerequisites
+## Troubleshooting
+
+| Symptom | What to check |
+|---|---|
+| App starts and immediately exits, or does not open at all | All three files must sit in the same folder. Copying only the `.exe` leaves it without the SimConnect libraries |
+| Windows blocked the app on first run | SmartScreen: choose **More info**, then **Run anyway**. If the zip came down marked as blocked, right-click it, open **Properties**, tick **Unblock**, and extract again |
+| Header stays on `AUTO CONNECT` | MSFS must be running and in a flight or mission, not at the main menu. The locator keeps retrying every three seconds |
+| `SCAN FOR TARGET` is greyed out | The locator is waiting for valid aircraft position data. It enables itself as soon as position and heading arrive |
+| Scan finds nothing | Fly closer to the mission objective and scan again. Career SAR targets only exist as SimObjects once the simulator has loaded them around your aircraft, so an early scan can come back empty even though a later one succeeds |
+| Locator hidden behind the simulator | Enable `ON TOP` and switch MSFS to windowed or borderless windowed mode |
+| Nothing happens after copying it into the Community folder | The locator is a standalone Windows application, not an add-on package. Run the `.exe` directly from any folder |
+| Nearby rocks or debris block a landing | Landing-site obstacles in SAR missions are static scenery, not SimObjects, so they cannot be detected or removed through SimConnect |
+| Crash auto-pause never fires | Crash damage must be enabled in the MSFS assistance settings; otherwise the simulator never raises the `Crashed` event |
+
+---
+
+## Build from source
+
+This section is for developers. Players should use the [release zip](https://github.com/chengchew0204/MSFS2024_SAR_Locator/releases/latest) instead.
+
+### Additional prerequisites
 
 | Requirement | Notes |
 |---|---|
-| Windows 10 or 11 (x64) | The locator is a Windows Forms application |
-| Microsoft Flight Simulator 2024 | Career mode, for Search & Rescue missions |
 | Microsoft Flight Simulator 2024 SDK | Provides the SimConnect libraries. Enable Developer Mode in MSFS, then `Help > SDK Installer` |
-| .NET Framework 4.8 | Included with current Windows versions. The build script uses the bundled C# compiler at `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe` |
+| .NET Framework 4.8 | The build script uses the bundled C# compiler at `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe` |
 
 The SDK provides two files that the locator needs:
 
@@ -69,15 +181,9 @@ The SDK provides two files that the locator needs:
 <SDK>\SimConnect SDK\lib\SimConnect.dll                                     (native x64 runtime)
 ```
 
-With a default SDK installation these live under `C:\MSFS 2024 SDK\`.
+With a default SDK installation these live under `C:\MSFS 2024 SDK\`. Neither DLL is committed to this repository, so you must install the SDK before building.
 
-Neither DLL is redistributed in this repository, so you must install the SDK before building.
-
----
-
-## Installation
-
-### Build with the included script (recommended)
+### Build with the included script
 
 ```powershell
 git clone https://github.com/chengchew0204/MSFS2024_SAR_Locator.git
@@ -107,7 +213,15 @@ msbuild MSFS2024SARLocator.csproj /p:Configuration=Release /p:Platform=x64
 
 Output goes to `bin\Release\`, with the native `SimConnect.dll` copied alongside it.
 
-### Deploying the build
+### Package a release zip
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Package-Release.ps1 -Version 1.0.0
+```
+
+`Package-Release.ps1` builds the project, stages the executable and both SimConnect libraries into a single top-level folder, and writes `dist\MSFS-SAR-Locator-v1.0.0.zip`. The `dist` folder is ignored by Git; upload the zip as a GitHub release asset.
+
+### Deploying a build manually
 
 `MSFS2024SARLocator.exe` needs both SimConnect DLLs in the same folder. To move the locator elsewhere, copy these three files together:
 
@@ -121,61 +235,6 @@ No installer, registry entries, or configuration files are used.
 
 ---
 
-## Usage
-
-1. Start MSFS 2024 and load a Career **Search & Rescue** mission. The locator can also be started first; it will wait and connect on its own.
-2. Run `MSFS2024SARLocator.exe`. The header shows `CONNECTED` once SimConnect is live and aircraft data is flowing.
-3. Press **`SCAN FOR TARGET`**. You can do this right at the mission start; there is no need to reach the search area first. The button becomes available as soon as aircraft position and heading arrive, and the default 15 NM radius often already covers the rescue target.
-4. If a target is found, the header switches to `TARGET LOCKED` and live guidance starts:
-   - follow the needle and the turn command,
-   - watch the distance count down.
-5. If the first scan finds nothing, the target is simply not loaded or not in range yet. Fly toward the mission objective and press the button again. Distance from the scan origin matters more than anything else, so scan again after each leg of your approach or search pattern.
-6. Once you are overhead, use `Copy coordinates` in Settings if you want the exact position for a landing plan.
-
-Scanning is entirely on demand. The locator never scans by itself, and pressing the button never depends on the search-area indicator in the header.
-
-Recommended window setup: run MSFS in **windowed** or **borderless windowed** mode and enable `ON TOP`. In exclusive fullscreen, Windows can still draw the simulator above every other window.
-
-### Header controls
-
-| Control | Action |
-|---|---|
-| Header area | Drag to move the window |
-| `SETTINGS` | Expand or collapse the settings panel below the HUD |
-| `ON TOP` | Toggle always-on-top; the preference is remembered |
-| `-` | Minimize to the taskbar |
-| `X` | Exit the application |
-
-### Settings
-
-| Setting | Default | Purpose |
-|---|---|---|
-| Radius NM | 15 | SimObject scan radius, 1 to 100 NM. Increase only if a scan misses a target you know is nearby |
-| Search gate NM | 0.50 | Distance to the navigation target at which the search area is considered active, 0.10 to 3.00 NM. Affects the `SEARCH ACTIVE` indicator only |
-| Auto-pause on incident | On | Master switch for the auto-pause feature |
-| Crash / Hard landing / Essential part broken | On | Individual incident triggers |
-| `Scan target` | - | Same action as the main `SCAN FOR TARGET` button |
-| `Reconnect` | - | Drop and re-establish the SimConnect connection |
-| `Copy coordinates` | - | Copy the locked target's latitude and longitude to the clipboard |
-
----
-
-## Troubleshooting
-
-| Symptom | What to check |
-|---|---|
-| Header stays on `AUTO CONNECT` | MSFS must be running and in a flight or mission, not at the main menu. The locator keeps retrying every three seconds |
-| `SCAN FOR TARGET` is greyed out | The locator is waiting for valid aircraft position data. It enables itself as soon as position and heading arrive |
-| Build fails: SimConnect DLL not found | Install the MSFS 2024 SDK, or pass the real path with `-SimConnectDll`. Do not enter a placeholder such as `<MSFS SDK>` |
-| Build fails: C# compiler not found | Install .NET Framework 4.8, or build the `.csproj` in Visual Studio instead |
-| App starts and immediately exits | The native `SimConnect.dll` is missing next to the executable, or the wrong architecture was built. The locator must be x64 |
-| Scan finds nothing | Fly closer to the mission objective and scan again. Career SAR targets only exist as SimObjects once the simulator has loaded them around your aircraft, so an early scan can come back empty even though a later one succeeds |
-| Nearby rocks or debris block a landing | Landing-site obstacles in SAR missions are static scenery, not SimObjects, so they cannot be detected or removed through SimConnect |
-| Crash auto-pause never fires | Crash damage must be enabled in the MSFS assistance settings; otherwise the simulator never raises the `Crashed` event |
-| Locator hidden behind the simulator | Enable `ON TOP` and switch MSFS to windowed or borderless windowed mode |
-
----
-
 ## Project layout
 
 | File | Purpose |
@@ -183,11 +242,12 @@ Recommended window setup: run MSFS in **windowed** or **borderless windowed** mo
 | `Program.cs` | Entire application: SimConnect integration, scan engine, target scoring, HUD, gauge, and settings |
 | `Build.ps1` | SDK discovery and single-file compile script |
 | `RunBuild.bat` | Double-click wrapper for `Build.ps1` |
+| `Package-Release.ps1` | Builds and packages the distributable release zip |
 | `MSFS2024SARLocator.csproj` | MSBuild / Visual Studio project |
 
 ## License
 
-Released under the [GNU General Public License v3.0](LICENSE). The SimConnect libraries from the MSFS 2024 SDK are not included in this repository and remain under Microsoft's own license terms.
+Released under the [GNU General Public License v3.0](LICENSE). The SimConnect libraries from the MSFS 2024 SDK are not included in this repository. They are redistributed inside the release zip for convenience and remain under Microsoft's own license terms.
 
 ## Notes
 

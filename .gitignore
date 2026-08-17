@@ -8,6 +8,10 @@ obj/
 Microsoft.FlightSimulator.SimConnect.dll
 SimConnect.dll
 
+# Release packages produced by Package-Release.ps1 (uploaded to GitHub Releases)
+dist/
+*.zip
+
 # Visual Studio
 .vs/
 *.user

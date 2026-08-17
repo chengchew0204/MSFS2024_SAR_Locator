@@ -519,7 +519,7 @@ namespace MSFS2024SARLocator
 
         public LocatorForm()
         {
-            Text = "MSFS 2024 SAR Locator V2 RC30";
+            Text = "MSFS 2024 SAR Locator 1.0.0";
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = true;
