@@ -10,6 +10,16 @@ The locator is read-only with respect to your flight: it never moves the aircraf
 
 ---
 
+## Support this project
+
+The locator is free and open source. If it saved you a search pattern or two, you can help keep it maintained:
+
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-chengchew0204-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/chengchew0204) [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-chengchew0204-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/chengchew0204)
+
+Starring the [repository](https://github.com/chengchew0204/MSFS2024_SAR_Locator) and reporting issues helps just as much. The same links are available in the app under `SETTINGS`.
+
+---
+
 ## Download and install
 
 No installer, no SDK, no compiler. Download, unzip, double-click.
@@ -101,6 +111,7 @@ Recommended window setup: run MSFS in **windowed** or **borderless windowed** mo
 | `Scan target` | - | Same action as the main `SCAN FOR TARGET` button |
 | `Reconnect` | - | Drop and re-establish the SimConnect connection |
 | `Copy coordinates` | - | Copy the locked target's latitude and longitude to the clipboard |
+| `GitHub Repo` / `GitHub Sponsors` / `Buy Me a Coffee` | - | Open the project page or a support page in your default browser |
 
 ---
 

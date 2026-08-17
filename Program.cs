@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -46,7 +47,9 @@ namespace MSFS2024SARLocator
         private const int CompactHeaderTopMostWidth = 54;
         private const int CompactHeaderWindowButtonWidth = 22;
         private const int CompactHudHeight = 216;
-        private const int CompactSettingsPanelHeight = 200;
+        private const int CompactSettingsPanelHeight = 242;
+        private const int CompactSupportCaptionHeight = 18;
+        private const int CompactSupportLinkRowHeight = 20;
         private const int CompactHudPaddingH = 10;
         private const int CompactHudPaddingTop = 6;
         private const int CompactHudPaddingBottom = 8;
@@ -72,6 +75,9 @@ namespace MSFS2024SARLocator
         private const int WmKeydown = 0x0100;
         private const int WmKeyup = 0x0101;
         private const int VkEscape = 0x1B;
+        private const string ProjectRepositoryUrl = "https://github.com/chengchew0204/MSFS2024_SAR_Locator";
+        private const string GitHubSponsorsUrl = "https://github.com/sponsors/chengchew0204";
+        private const string BuyMeACoffeeUrl = "https://buymeacoffee.com/chengchew0204";
         private static readonly string[] SimulatorWindowTitles =
         {
             "Microsoft Flight Simulator 2024",
@@ -514,6 +520,10 @@ namespace MSFS2024SARLocator
         private readonly Button _scanNowButton = new Button();
         private readonly Button _copyCoordinatesButton = new Button();
         private readonly Button _reconnectButton = new Button();
+        private readonly Label _supportCaption = new Label();
+        private readonly LinkLabel _repositoryLink = new LinkLabel();
+        private readonly LinkLabel _sponsorsLink = new LinkLabel();
+        private readonly LinkLabel _coffeeLink = new LinkLabel();
         private readonly NotifyIcon _trayIcon = new NotifyIcon();
         private readonly ContextMenuStrip _trayMenu = new ContextMenuStrip();
 
@@ -812,7 +822,7 @@ namespace MSFS2024SARLocator
             TableLayoutPanel layout = new TableLayoutPanel();
             layout.Dock = DockStyle.Fill;
             layout.ColumnCount = 1;
-            layout.RowCount = 5;
+            layout.RowCount = 7;
             layout.BackColor = _cardSecondary;
             layout.Padding = new Padding(8, 8, 8, 8);
             layout.Margin = Padding.Empty;
@@ -821,6 +831,8 @@ namespace MSFS2024SARLocator
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, CompactSupportCaptionHeight));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, CompactSupportLinkRowHeight));
 
             TableLayoutPanel numericRow = new TableLayoutPanel();
             numericRow.Dock = DockStyle.Fill;
@@ -909,12 +921,83 @@ namespace MSFS2024SARLocator
 
             _copyCoordinatesButton.Margin = new Padding(0, 4, 0, 0);
 
+            _supportCaption.Text = "Project and support";
+            _supportCaption.AutoSize = false;
+            _supportCaption.Dock = DockStyle.Fill;
+            _supportCaption.TextAlign = ContentAlignment.BottomLeft;
+            _supportCaption.ForeColor = _textMuted;
+            _supportCaption.Font = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            _supportCaption.Margin = new Padding(0, 6, 0, 0);
+            _supportCaption.Padding = Padding.Empty;
+
+            ConfigureSupportLink(_repositoryLink, "GitHub Repo", ProjectRepositoryUrl, ContentAlignment.MiddleLeft);
+            ConfigureSupportLink(_sponsorsLink, "GitHub Sponsors", GitHubSponsorsUrl, ContentAlignment.MiddleCenter);
+            ConfigureSupportLink(_coffeeLink, "Buy Me a Coffee", BuyMeACoffeeUrl, ContentAlignment.MiddleRight);
+
+            TableLayoutPanel supportRow = new TableLayoutPanel();
+            supportRow.Dock = DockStyle.Fill;
+            supportRow.ColumnCount = 3;
+            supportRow.RowCount = 1;
+            supportRow.Margin = Padding.Empty;
+            supportRow.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
+            supportRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            supportRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36F));
+            supportRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
+            supportRow.Controls.Add(_repositoryLink, 0, 0);
+            supportRow.Controls.Add(_sponsorsLink, 1, 0);
+            supportRow.Controls.Add(_coffeeLink, 2, 0);
+
             layout.Controls.Add(numericRow, 0, 0);
             layout.Controls.Add(_autoPauseMaster, 0, 1);
             layout.Controls.Add(optionRow, 0, 2);
             layout.Controls.Add(actionRow, 0, 3);
             layout.Controls.Add(_copyCoordinatesButton, 0, 4);
+            layout.Controls.Add(_supportCaption, 0, 5);
+            layout.Controls.Add(supportRow, 0, 6);
             _settingsPanel.Controls.Add(layout);
+        }
+
+        private void ConfigureSupportLink(LinkLabel link, string text, string url, ContentAlignment alignment)
+        {
+            link.Text = text;
+            link.AutoSize = false;
+            link.Dock = DockStyle.Fill;
+            link.TextAlign = alignment;
+            link.Margin = Padding.Empty;
+            link.Padding = Padding.Empty;
+            link.BackColor = Color.Transparent;
+            link.Font = new Font("Segoe UI", 7.5F, FontStyle.Regular, GraphicsUnit.Point);
+            link.LinkBehavior = LinkBehavior.HoverUnderline;
+            link.LinkColor = _textMuted;
+            link.ActiveLinkColor = _accentBlue;
+            link.VisitedLinkColor = _textMuted;
+            link.DisabledLinkColor = _textMuted;
+            link.Cursor = Cursors.Hand;
+            link.LinkClicked += delegate { OpenExternalUrl(url); };
+            link.MouseEnter += delegate
+            {
+                link.LinkColor = _accentBlue;
+                link.VisitedLinkColor = _accentBlue;
+            };
+            link.MouseLeave += delegate
+            {
+                link.LinkColor = _textMuted;
+                link.VisitedLinkColor = _textMuted;
+            };
+        }
+
+        private void OpenExternalUrl(string url)
+        {
+            try
+            {
+                ProcessStartInfo info = new ProcessStartInfo(url);
+                info.UseShellExecute = true;
+                Process.Start(info);
+            }
+            catch (Exception)
+            {
+                SetStatus("Could not open the link in your browser.");
+            }
         }
 
         private void BuildTrayIcon()
